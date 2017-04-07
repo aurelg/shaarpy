@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from shaarpy import Shaarpy
+from shaarpy.shaarpy import Shaarpy
 
 # Account description
 login = "tagada"

@@ -8,6 +8,8 @@ class Shaarpy:
 
     _TOKEN = None
     _URL = None
+    _TIMEOUT = 30
+    _SESSION = None
 
     def _get_param_value_from_html(self, html, param_name):
         soup = BeautifulSoup(html, 'html.parser')
@@ -28,7 +30,7 @@ class Shaarpy:
 
         # Get token from login page
         self._SESSION = requests.Session()
-        r = self._SESSION.get("%s?do=login" % self._URL)
+        r = self._SESSION.get("%s?do=login" % self._URL, timeout=self._TIMEOUT)
         self._TOKEN = self._get_param_value_from_html(r.content, 'token')
 
         # Login
@@ -37,13 +39,13 @@ class Shaarpy:
                 "longlastingsession": "on",
                 "token": self._TOKEN,
                 "do": "login"}
-        r = self._SESSION.post(self._URL, data)
+        r = self._SESSION.post(self._URL, data, timeout=self._TIMEOUT)
         self._TOKEN = self._get_param_value_from_html(r.content, 'token')
 
     def post_link(self, url, tags, desc='', private=False):
 
         # Submit URL to retrieve save form and already filled fields
-        r = self._SESSION.get('%s?post=%s' % (self._URL, url))
+        r = self._SESSION.get('%s?post=%s' % (self._URL, url), timeout=self._TIMEOUT)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')
         lf_linkdate = self._get_param_value(soup, 'lf_linkdate')
@@ -71,6 +73,7 @@ class Shaarpy:
                 }
         if private:
             data['lf_private'] = 'on'
-        r = self._SESSION.post('%s?post=%s' % (self._URL, url), data)
+        r = self._SESSION.post('%s?post=%s' % (self._URL, url), data,
+                               timeout=self._TIMEOUT)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')

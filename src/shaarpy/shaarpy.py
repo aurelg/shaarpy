@@ -40,7 +40,7 @@ class Shaarpy:
         r = self._SESSION.post(self._URL, data)
         self._TOKEN = self._get_param_value_from_html(r.content, 'token')
 
-    def post_link(self, url, tags, desc):
+    def post_link(self, url, tags, desc='', private=False):
 
         # Submit URL to retrieve save form and already filled fields
         r = self._SESSION.get('%s?post=%s' % (self._URL, url))
@@ -60,14 +60,17 @@ class Shaarpy:
                                      desc)
 
         # Submit save form
-        r = self._SESSION.post('%s?post=%s' % (self._URL, url), {
-            'lf_linkdate': lf_linkdate,
-            'lf_url': url,
-            'lf_title': lf_title,
-            'lf_description': desc,
-            'lf_tags': ' '.join(set(tags)),
-            'save_edit': 'Enregistrer',
-            'token': self._TOKEN
-            })
+        data = {
+                'lf_linkdate': lf_linkdate,
+                'lf_url': url,
+                'lf_title': lf_title,
+                'lf_description': desc,
+                'lf_tags': ' '.join(set(tags)),
+                'save_edit': 'Enregistrer',
+                'token': self._TOKEN
+                }
+        if private:
+            data['lf_private'] = 'on'
+        r = self._SESSION.post('%s?post=%s' % (self._URL, url), data)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')

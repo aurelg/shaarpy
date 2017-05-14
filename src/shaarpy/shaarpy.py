@@ -60,10 +60,13 @@ class Shaarpy:
         # Description
         lf_description = soup.find('textarea',
                                    attrs={'name': 'lf_description'}).text
-        if desc is not None:
-            desc = "%s | %s:  %s" % (lf_description,
-                                     datetime.now().isoformat(),
-                                     desc)
+        if desc is None:
+            desc = lf_description
+        else:
+            if lf_description != '':
+                desc = "%s | %s:  %s" % (lf_description,
+                                         datetime.now().isoformat(),
+                                         desc)
 
         # Submit save form
         data = {

@@ -42,21 +42,25 @@ class Shaarpy:
         r = self._SESSION.post(self._URL, data, timeout=self._TIMEOUT)
         self._TOKEN = self._get_param_value_from_html(r.content, 'token')
 
-    def post_link(self, url, tags, desc='', private=False):
+    def post_link(self, url, tags, title=None, desc=None, private=False):
 
         # Submit URL to retrieve save form and already filled fields
         r = self._SESSION.get('%s?post=%s' % (self._URL, url), timeout=self._TIMEOUT)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')
         lf_linkdate = self._get_param_value(soup, 'lf_linkdate')
-        lf_title = self._get_param_value(soup, 'lf_title')
+
+        # Title
+        lf_title = self._get_param_value(soup, 'lf_title') \
+                if title is None else title
+        # Tags
+        lf_tags = soup.find('input', attrs={'name': 'lf_tags'})['value']
+        tags += lf_tags.split()
+
+        # Description
         lf_description = soup.find('textarea',
                                    attrs={'name': 'lf_description'}).text
-        lf_tags = soup.find('input', attrs={'name': 'lf_tags'})['value']
-
-        # Merge
-        tags += lf_tags.split()
-        if lf_description != '':
+        if desc is not None:
             desc = "%s | %s:  %s" % (lf_description,
                                      datetime.now().isoformat(),
                                      desc)

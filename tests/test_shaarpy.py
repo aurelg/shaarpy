@@ -15,8 +15,9 @@ except:
 # Post link
 url = 'http://example.org'
 tags = ['tag1', 'tag2', 'tag3']
+title = 'title'
 desc = 'description'
 
 s = Shaarpy()
 s.login(login, password, shaarli_url)
-s.post_link(url, tags)
+s.post_link(url, tags, title=title, desc=desc)

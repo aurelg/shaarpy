@@ -45,14 +45,15 @@ class Shaarpy:
     def post_link(self, url, tags, title=None, desc=None, private=False):
 
         # Submit URL to retrieve save form and already filled fields
-        r = self._SESSION.get('%s?post=%s' % (self._URL, url), timeout=self._TIMEOUT)
+        r = self._SESSION.get('%s?post=%s' % (self._URL, url),
+                              timeout=self._TIMEOUT)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')
         lf_linkdate = self._get_param_value(soup, 'lf_linkdate')
 
         # Title
         lf_title = self._get_param_value(soup, 'lf_title') \
-                if title is None else title
+            if title is None else title
         # Tags
         lf_tags = soup.find('input', attrs={'name': 'lf_tags'})['value']
         tags += lf_tags.split()

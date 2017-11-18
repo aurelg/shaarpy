@@ -3,7 +3,7 @@ Documentation
 """
 
 from distutils.core import setup
-from shaarpy import __version__
+from src.shaarpy import __version__
 
 mod_name = 'shaarpy'
 setup(name=mod_name,

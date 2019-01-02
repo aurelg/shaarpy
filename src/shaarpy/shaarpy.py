@@ -100,3 +100,4 @@ class Shaarpy:
             '%s?post=%s' % (self._URL, url), data, timeout=self._TIMEOUT)
         soup = BeautifulSoup(r.content, 'html.parser')
         self._TOKEN = self._get_param_value(soup, 'token')
+        return self._TOKEN
